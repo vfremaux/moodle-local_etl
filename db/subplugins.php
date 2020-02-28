@@ -16,4 +16,4 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$subplugins = array('localtetl'  => 'local/etl/plugins');
+$subplugins = array('localetl'  => 'local/etl/plugins');
