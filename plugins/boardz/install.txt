@@ -1,0 +1,8 @@
+ETL for Moodle
+***********************************
+
+ETL for moodle provides a standard and generic way to export documented data extraction to an external
+analysis software.
+
+ETL is a local plugin and has some subplugins for adapting the output to each external LRS recorder.
+
