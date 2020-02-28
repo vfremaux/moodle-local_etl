@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-$plugin->version  = 2019071400;
-$plugin->requires = 2018112800;  // Requires this Moodle version
+$plugin->version  = 2020022700;
+$plugin->requires = 2019051100;  // Requires this Moodle version
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = "3.6.0 (Build 2019071400)";
+$plugin->release = "3.7.0 (Build 2020022700)";
 $plugin->component = 'localetl_toamoodle';
 $plugin->dependencies = array('local_etl' => '2019071400');

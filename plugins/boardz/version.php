@@ -17,6 +17,6 @@
 $plugin->version  = 2020022700;
 $plugin->requires = 2018112800;  // Requires this Moodle version
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = "3.6.0 (Build 2020022700)";
+$plugin->release = "3.7.0 (Build 2020022700)";
 $plugin->component = 'localetl_boardz';
 $plugin->dependencies = array('local_etl' => '2019071400');
