@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="report/etl/plugins/boardz/db" VERSION="20090921" COMMENT="XMLDB file for Moodle report/etl/plugins/boardz"
+<XMLDB PATH="local/etl/plugins/boardz/db" VERSION="20090921" COMMENT="XMLDB file for Moodle local/etl/plugins/boardz"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="reportetl_boardz" COMMENT="Default comment for boardz for moodle, please edit me">
+    <TABLE NAME="localetl_boardz" COMMENT="Default comment for boardz for moodle, please edit me">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false"/>
         <FIELD NAME="lastextract" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false"/>

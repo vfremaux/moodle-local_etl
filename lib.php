@@ -33,7 +33,7 @@ require_once($CFG->dirroot.'/local/etl/classes/extractor.class.php');
  * get all subplugins of ETL
  *
  */
-function etl_get_plugins() {
+function local_etl_get_plugins() {
 
     $plugins = get_list_of_plugins('/local/etl/plugins', '', $basedir = '');
 
@@ -44,7 +44,7 @@ function etl_get_plugins() {
  * get an instance of a subplugin
  *
  */
-function etl_plugin_has_config($plugin) {
+function local_etl_plugin_has_config($plugin) {
     global $CFG;
 
     return file_exists($CFG->dirroot.'/local/etl/plugins/'.$plugin.'/config_form.php');
@@ -54,7 +54,7 @@ function etl_plugin_has_config($plugin) {
  * Deprecate or merge with following.
  *
  */
-function etl_error($msg) {
+function local_etl_error($msg) {
     $testmode = optional_param('mode', '', PARAM_INT);
     if ($testmode == 'test') {
         print_error($msg);
@@ -71,7 +71,7 @@ function etl_error($msg) {
  * a small error function to generate XML error report.
  *
  */
-function send_xml_error($errstring, &$etl_environment) {
+function local_etl_send_xml_error($errstring, &$etl_environment) {
     echo "<?xml version=\"1.0\"  encoding=\"{$etl_environment->outputencoding}\" ?>\n<error>\n";
     echo "<errormsg>$errstring</errormsg>\n";
     echo "</error>\n";
@@ -83,7 +83,7 @@ function send_xml_error($errstring, &$etl_environment) {
  * @param string $plugintype
  * @return array of objects.
  */
-function etl_get_instances($plugintype) {
+function local_etl_get_instances($plugintype) {
     global $DB;
 
     $instances = [];

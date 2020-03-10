@@ -128,7 +128,7 @@ class boardz_extractor extends etl_extractor {
         if ($info = $this->get_key_info($key, $this->method)) {
             return $info;
         } else {
-            etl_error('could not read ticket information');
+            local_etl_error('could not read ticket information');
         }
     }
 
@@ -148,13 +148,13 @@ class boardz_extractor extends etl_extractor {
             // TODO remove
             $boardz = $DB->get_record('boardz', array('id'  => $this->id));
             if (empty($boardz->publickey)) {
-                etl_error("Cannot use unsecured BOARDZ connector");
+                local_etl_error("Cannot use unsecured BOARDZ connector");
             }
 
             $pkey = openssl_pkey_get_public($boardz->publickey);
 
             if (!openssl_public_decrypt(urldecode($key), $decrypted, $pkey)) {
-                etl_error("Failed reading key");
+                local_etl_error("Failed reading key");
             }
         } else {
             // TODO remove
@@ -171,7 +171,7 @@ class boardz_extractor extends etl_extractor {
         }
 
         if (!$keyinfo = json_decode($decrypted)) {
-            etl_error('Error while deserializing '.$decrypted);
+            local_etl_error('Error while deserializing '.$decrypted);
         }
 
         return $keyinfo;
@@ -197,7 +197,7 @@ class boardz_extractor extends etl_extractor {
         $boardz->masquerade = $this->masquerade;
 
         if (!$DB->update_record('localetl_boardz', $boardz)) {
-            etl_error("Could not save BOARDZ config");
+            local_etl_error("Could not save BOARDZ config");
         }
     }
 
@@ -1796,7 +1796,7 @@ class boardz_extractor extends etl_extractor {
                 $extractname = 'lastextract_'.$this->parms->ackquery;
                 $this->$extractname = $this->lastextract;
             } else {
-                etl_error("Not a valid boardzmoodle query to acknowledge");
+                local_etl_error("Not a valid boardzmoodle query to acknowledge");
                 die;
             }
             $this->lastextract = 0;

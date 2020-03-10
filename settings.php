@@ -16,31 +16,17 @@
 
 /**
  * @package     local_etl
- ù @category    report
+ ù @category    local
  * @author      Valery Fremaux <valery@valeisti.fr>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL
  * @copyright   (C) 1999 onwards Martin Dougiamas  http://dougiamas.com
  */
 defined('MOODLE_INTERNAL') || die;
 
-$hasconfig = false;
-$hassiteconfig = false;
-if (is_dir($CFG->dirroot.'/local/adminsettings')) {
-    // Integration driven code
-    if (has_capability('local/adminsettings:nobody', context_system::instance())) {
-        $hasconfig = true;
-        $hassiteconfig = true;
-    } else if (has_capability('moodle/site:config', context_system::instance())) {
-        $hasconfig = true;
-        $hassiteconfig = false;
-    }
-} else {
-    // Standard Moodle code
-    $hassiteconfig = true;
-    $hasconfig = true;
-}
-
 if ($hassiteconfig) {
+    $settings = new admin_settingpage('local_etl', get_string('pluginname', 'local_etl'));
+    $ADMIN->add('localplugins', $settings);
+
     $label = get_string('pluginname', 'local_etl');
     $pageurl = new moodle_url('/local/etl/index.php"');
     $ADMIN->add('reports', new admin_externalpage('localetlext', $label, $pageurl, 'moodle/site:config'));
