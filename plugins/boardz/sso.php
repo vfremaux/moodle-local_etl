@@ -41,13 +41,13 @@ $etl_environment = new boardz_extractor($boardzid, $key, $method);
 // check reliability of the source.
 $remotename = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 if (!empty($etl_environment->boardzipmask) && ($remotename != $etl_environment->boardzhost)) {
-    send_xml_error("Error. BOARDZ host not matched : $remotehostname", $etl_environment);
+    local_etl_send_xml_error("Error. BOARDZ host not matched : $remotehostname", $etl_environment);
 }
 
 $ipmask = str_replace('.', '\\.', $etl_environment->boardzipmask);
 $ipmask = str_replace('*', '.*', $ipmask);
 if (!empty($etl_environment->boardzipmask) && !ereg($ipmask, $_SERVER['REMOTE_ADDR'])) {
-    send_xml_error('Error. BOARDZ Ip range not acceptable', $etl_environment);
+    local_etl_send_xml_error('Error. BOARDZ Ip range not acceptable', $etl_environment);
 }
 
 // get user and relevant fields
@@ -72,7 +72,7 @@ if ($user = get_record_select('user', " username = '{$etl_environment->parms->lo
         echo "<encrypteduser>$outputticket</encrypteduser>\n";
         echo "</profile>\n";
     } else {
-        send_xml_error('Error. No user', $etl_environment);
+        local_etl_send_xml_error('Error. No user', $etl_environment);
     }
 
 /**

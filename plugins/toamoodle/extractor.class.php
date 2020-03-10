@@ -124,12 +124,12 @@ class toamoodle_extractor extends etl_extractor {
 
             // Check if SSO/DES ticket is not obsolete.
             if ($info->date < time() - SSL_SAFE_GUARD) {
-                etl_error('ticket is too old');
+                local_etl_error('ticket is too old');
                 return false;
             }
             return $info;
         } else {
-            etl_error('could not read ticket information');
+            local_etl_error('could not read ticket information');
         }
     }
 
@@ -143,13 +143,13 @@ class toamoodle_extractor extends etl_extractor {
 
             $toa = $DB->get_record('localetl_toamoodle', array('id'  => $this->id));
             if (empty($toa->publickey)) {
-                etl_error("Cannot use unsecured TAO connector");
+                local_etl_error("Cannot use unsecured TAO connector");
             }
 
             $pkey = openssl_pkey_get_public($toa->publickey);
 
             if (!openssl_public_decrypt(urldecode($key), $decrypted, $pkey)) {
-                etl_error("Failed reading key");
+                local_etl_error("Failed reading key");
             }
         } else {
 
@@ -165,7 +165,7 @@ class toamoodle_extractor extends etl_extractor {
         }
 
         if (!$keyinfo = json_decode($decrypted)) {
-            etl_error('Error while deserializing');
+            local_etl_error('Error while deserializing');
         }
 
         return $keyinfo;
@@ -192,7 +192,7 @@ class toamoodle_extractor extends etl_extractor {
         $toa->masquerade = $this->masquerade;
 
         if (!$DB->update_record('localetl_toamoodle', $toa)) {
-            etl_error("Could not save TOAMOODLE config");
+            local_etl_error("Could not save TOAMOODLE config");
         }
     }
 
@@ -1676,7 +1676,7 @@ class toamoodle_extractor extends etl_extractor {
                 $extractname = 'lastextract_'.$this->parms->ackquery;
                 $this->$extractname = $this->lastextract;
             } else {
-                etl_error("Not a valid taomoodle query to acknowledge");
+                local_etl_error("Not a valid taomoodle query to acknowledge");
                 die;
             }
             $this->lastextract = 0;

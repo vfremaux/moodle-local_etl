@@ -43,7 +43,7 @@ $functions = array(
 );
 
 $services = array(
-    'Moodle Etl' => array(
+    'Moodle Local Etl' => array(
         'functions' => array ('local_etl_get', 'local_etl_get_sql'), // Web service function names.
         'requiredcapability' => 'local/etl:export',
         'restrictedusers' => 1,

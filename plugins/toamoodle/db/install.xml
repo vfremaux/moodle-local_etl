@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="report/etl/plugins/toamoodle/db" VERSION="20090921" COMMENT="XMLDB file for Moodle report/etl/plugins/toamoodle"
+<XMLDB PATH="local/etl/plugins/toamoodle/db" VERSION="20090921" COMMENT="XMLDB file for Moodle local/etl/plugins/toamoodle"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="reportetl_toamoodle" COMMENT="Default comment for toa for moodle, please edit me">
+    <TABLE NAME="localetl_toamoodle" COMMENT="Default comment for toa for moodle, please edit me">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="wwwroot"/>
         <FIELD NAME="wwwroot" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" ENUM="false" COMMENT="Relative to wwwroot" PREVIOUS="id" NEXT="publickey"/>

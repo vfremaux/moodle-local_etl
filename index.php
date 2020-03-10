@@ -54,7 +54,7 @@ echo $OUTPUT->heading(get_string('etl', 'local_etl'), 1);
 
 $currentetlplugin = optional_param('etlplugin', '', PARAM_TEXT);
 
-$etlplugins = etl_get_plugins();
+$etlplugins = local_etl_get_plugins();
 
 if (empty($etlplugins)) {
     // This should not happen, unless all subplugins are removed from the codebase.
@@ -77,7 +77,7 @@ if (!empty($output)) {
     echo $OUTPUT->notification($output, 'success');
 }
 
-$instances = etl_get_instances($currentetlplugin);
+$instances = local_etl_get_instances($currentetlplugin);
 
 echo $renderer->instances_table($instances, $currentetlplugin);
 

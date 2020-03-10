@@ -42,13 +42,13 @@
     // check reliability of the source.
     $remotename = gethostbyaddr($_SERVER['REMOTE_ADDR']);
     if (!empty($etl_environment->toaipmask) && ($remotename != $etl_environment->toahost)) {
-        send_xml_error("Error. TOA host not matched : $remotehostname", $etl_environment);
+        local_etl_send_xml_error("Error. TOA host not matched : $remotehostname", $etl_environment);
     }
 
     $ipmask = str_replace('.', '\\.', $etl_environment->toaipmask);
     $ipmask = str_replace('*', '.*', $ipmask);
     if (!empty($etl_environment->toaipmask) && !ereg($ipmask, $_SERVER['REMOTE_ADDR'])) {
-        send_xml_error('Error. TOA Ip range not acceptable', $etl_environment);
+        local_etl_send_xml_error('Error. TOA Ip range not acceptable', $etl_environment);
     }
     
     // get user and relevant fields
@@ -73,7 +73,7 @@
         echo "<encrypteduser>$outputticket</encrypteduser>\n";
         echo "</profile>\n";                
     } else {
-        send_xml_error('Error. No user', $etl_environment);
+        local_etl_send_xml_error('Error. No user', $etl_environment);
     }
     
     /**
@@ -102,7 +102,7 @@
     * a small error function to generate XML error report.
     *
     */
-    function send_xml_error($errstring, &$etl_environment){        
+    function local_etl_send_xml_error($errstring, &$etl_environment){        
         echo "<?xml version=\"1.0\"  encoding=\"{$etl_environment->outputencoding}\" ?>\n<error>\n";
         echo "<errormsg>$errstring</errormsg>\n";
         echo "</error>\n";  

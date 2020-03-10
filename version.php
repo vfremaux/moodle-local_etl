@@ -26,11 +26,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2020022000;
+$plugin->version  = 2020022002;
 $plugin->requires = 2019051100;  // Requires this Moodle version.
 $plugin->cron     = 0;
 $plugin->component = 'local_etl';
 $plugin->maturity = MATURITY_RC;
+$plugin->release = '3.7.0 (Build 2020022002)';   // Requires this Moodle version.
 
 // Non moodle attributes.
-$plugin->codeincrement = '3.7.0001';
+$plugin->codeincrement = '3.7.0002';

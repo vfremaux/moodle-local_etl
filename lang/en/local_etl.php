@@ -19,7 +19,7 @@ $string['etl:export'] = 'Export data through ETL feeders';
 
 $string['addinstance'] = 'Add ETL instance';
 $string['editinstance'] = 'Edit ETL instance';
-$string['pluginname'] = 'Data extraction (ETL)';
+$string['pluginname'] = 'Data extraction (Local ETL)';
 $string['configmaxxmlrecordsperget'] =  'Max output records per get query';
 $string['configmaxxmlrecordsperget_desc'] =  'An absolute max amount of etl records that can be processed and output for a single get call.';
 $string['deletecomplete'] = 'Instance deleted';
