@@ -6,16 +6,16 @@
   <TABLES>
     <TABLE NAME="localetl_boardz" COMMENT="Default comment for boardz for moodle, please edit me">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false"/>
-        <FIELD NAME="lastextract" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false"/>
-        <FIELD NAME="lastextractactions" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="lastextract" NEXT="lastextractacademics"/>
-        <FIELD NAME="lastextractacademics" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="lastextractactions" NEXT="lastextractdocuments"/>
-        <FIELD NAME="lastextractdocuments" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="lastextractacademics" NEXT="lastextractcommunications"/>
-        <FIELD NAME="lastextractcommunications" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="lastextractdocuments" NEXT="lastextractgrades"/>
-        <FIELD NAME="lastextractgrades" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="lastextractcommunications" NEXT="outputencoding"/>
-        <FIELD NAME="boardzhost" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" ENUM="false" COMMENT="Host for Refer based check" PREVIOUS="externalaccessurl" NEXT="toaipmask" />
-        <FIELD NAME="boardzipmask" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" ENUM="false" COMMENT="Mask for IP based check" PREVIOUS="toahost" NEXT="masquerade" />
-        <FIELD NAME="masquerade" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" ENUM="false" DEFAULT="0" COMMENT="Mask for IP based check" PREVIOUS="toaipmask" />
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"/>
+        <FIELD NAME="lastextract" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"/>
+        <FIELD NAME="lastextractactions" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"/>
+        <FIELD NAME="lastextractacademics" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"/>
+        <FIELD NAME="lastextractdocuments" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"/>
+        <FIELD NAME="lastextractcommunications" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"/>
+        <FIELD NAME="lastextractgrades" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"/>
+        <FIELD NAME="boardzhost" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Host for Refer based check"/>
+        <FIELD NAME="boardzipmask" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Mask for IP based check"/>
+        <FIELD NAME="masquerade" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" DEFAULT="0" COMMENT="Anonymize" />
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
