@@ -23,6 +23,7 @@
  */
 defined('MOODLE_INTERNAL') || die;
 
+
 if ($hassiteconfig) {
     $settings = new admin_settingpage('local_etl', get_string('pluginname', 'local_etl'));
     $ADMIN->add('localplugins', $settings);

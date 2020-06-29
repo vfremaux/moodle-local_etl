@@ -658,6 +658,7 @@ class boardz_extractor extends etl_extractor {
                 list($usec, $sec) = explode(' ', microtime());
                 $otick = (float)$sec + (float)$usec;
 
+                boardz_escape_ampersands($sample);
                 $output .= recordtoxml($sample, $i, 'logrecord', '');
 
                 // Performance.
@@ -670,6 +671,7 @@ class boardz_extractor extends etl_extractor {
 
             // Don't forget last record !!
             if ($i > 0) {
+                boardz_escape_ampersands($sample);
                 $output .= recordtoxml($sample, $i, 'logrecord', '');
             }
             $lastsample = $sample;

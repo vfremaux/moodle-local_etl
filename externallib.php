@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/externallib.php");
 require_once($CFG->dirroot."/local/etl/classes/extractor.class.php");
 require_once($CFG->dirroot.'/local/etl/lib.php');
+require_once($CFG->dirroot.'/local/etl/plugins/boardz/locallib.php');
 require_once($CFG->dirroot.'/local/etl/xmllib.php');
 
 use local_etl\etl_extractor;
@@ -102,7 +103,13 @@ class local_etl_external extends external_api {
     public static function get_sql($sql) {
         global $DB;
 
+        $restformat = 'xml';
+        if (optional_param('moodlewsrestformat', '', PARAM_TEXT) == 'json') {
+            $restformat = 'json';
+        }
+
         debug_trace("ETL/Get SQL : $sql");
+        debug_trace("ETL/Get SQL Required format : $restformat");
 
         try {
             $records = $DB->get_records_sql($sql, []);
@@ -115,7 +122,12 @@ class local_etl_external extends external_api {
             $result = new StdClass;
             $result->recordset = 'Raw SQL Result (Error)';
             $result->records = count($records);
-            $result->xmlcontent = $xmlout;
+            if ($restformat == 'xml') {
+                debug_trace("ETL/Get SQL Format : Escaping internal Error XML");
+                $result->xmlcontent = htmlentities($xmlout, ENT_QUOTES, 'UTF-8');
+            } else {
+                $result->xmlcontent = $xmlout;
+            }
         }
 
         $result = new StdClass;
@@ -130,7 +142,14 @@ class local_etl_external extends external_api {
         }
         $xmlout .= '</sqlrecords>';
 
-        $result->xmlcontent = $xmlout;
+        boardz_escape_ampersands($xmlout);
+
+        if ($restformat == 'xml') {
+            debug_trace("ETL/Get SQL Format : Escaping internal XML");
+            $result->xmlcontent = htmlentities($xmlout, ENT_QUOTES, 'UTF-8');
+        } else {
+            $result->xmlcontent = $xmlout;
+        }
 
         return $result;
     }
