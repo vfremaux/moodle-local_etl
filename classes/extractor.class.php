@@ -156,7 +156,9 @@ abstract class etl_extractor {
         }
 
         // Checks "in progress" status and mark it.
-        debug_trace("Starting ETL extraction on $this->query ");
+        if (function_exists('debug_trace')) {
+            debug_trace("Starting ETL extraction on $this->query ");
+        }
 
         $results = new Stdclass;
         $results->recordset = $this->query;
@@ -179,7 +181,9 @@ abstract class etl_extractor {
         // Allows locally derouting the extraction for customization.
         if (preg_match("/^special_(.*)/", $this->query, $matches)) {
             $functionname = 'extract_'.$matches[1];
-            debug_trace("Special ETL query $this->query. Calling method $functionname");
+            if (function_exists('debug_trace')) {
+                debug_trace("Special ETL query $this->query. Calling method $functionname");
+            }
             if (method_exists($this, $functionname)) {
                 $perfs = $this->$functionname($output, $testmode);
 
@@ -213,7 +217,9 @@ abstract class etl_extractor {
             $testclause = ' LIMIT 0,30 ';
         }
 
-        debug_trace("Starting Default ETL extraction for $this->query ");
+        if (function_exists('debug_trace')) {
+            debug_trace("Starting Default ETL extraction for $this->query ");
+        }
         $sql = $this->etlqueries[$this->query].$testclause;
 
         $str .= "<?xml version=\"1.0\"  encoding=\"UTF-8\" ?>\n<logrecords>\n";
