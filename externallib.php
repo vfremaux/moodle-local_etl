@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/externallib.php");
 require_once($CFG->dirroot."/local/etl/classes/extractor.class.php");
 require_once($CFG->dirroot.'/local/etl/lib.php');
+require_once($CFG->dirroot.'/local/etl/plugins/boardz/locallib.php');
 require_once($CFG->dirroot.'/local/etl/xmllib.php');
 
 use local_etl\etl_extractor;
@@ -61,18 +62,24 @@ class local_etl_external extends external_api {
             throw new invalid_parameter_exception("ETL id cannot be null");
         }
 
-        debug_trace("ws::get() Invoking WS instance for $plugin, $id, $queryparams, 'none' auth with testmode=$testmode");
+        if (function_exists('debug_trace')) {
+            debug_trace("ws::get() Invoking WS instance for $plugin, $id, $queryparams, 'none' auth with testmode=$testmode");
+        }
 
         // $queryparams needs to be a json encoded string, not encrypted (WS api already authentifies transaction by itself).
         $etlenvironment = etl_extractor::instance($plugin, $id, $queryparams, 'none');
 
-        debug_trace("ws::get() Instance OK");
+        if (function_exists('debug_trace')) {
+            debug_trace("ws::get() Instance OK");
+        }
 
         @set_time_limit(0);
         ini_set('memory_limit', '512M');
 
         $result = new StdClass;
-        debug_trace("ws::get() Calling extraction");
+        if (function_exists('debug_trace')) {
+            debug_trace("ws::get() Calling extraction");
+        }
         $result->xmlcontent = $etlenvironment->extract($testmode, $results);
         $result->recordset = $etlenvironment->query;
         $result->records = $results->records;
@@ -102,7 +109,15 @@ class local_etl_external extends external_api {
     public static function get_sql($sql) {
         global $DB;
 
-        debug_trace("ETL/Get SQL : $sql");
+        $restformat = 'xml';
+        if (optional_param('moodlewsrestformat', '', PARAM_TEXT) == 'json') {
+            $restformat = 'json';
+        }
+
+        if (function_exists('debug_trace')) {
+            debug_trace("ETL/Get SQL : $sql");
+            debug_trace("ETL/Get SQL Required format : $restformat");
+        }
 
         try {
             $records = $DB->get_records_sql($sql, []);
@@ -115,7 +130,14 @@ class local_etl_external extends external_api {
             $result = new StdClass;
             $result->recordset = 'Raw SQL Result (Error)';
             $result->records = count($records);
-            $result->xmlcontent = $xmlout;
+            if ($restformat == 'xml') {
+                if (function_exists('debug_trace')) {
+                    debug_trace("ETL/Get SQL Format : Escaping internal Error XML");
+                }
+                $result->xmlcontent = htmlentities($xmlout, ENT_QUOTES, 'UTF-8');
+            } else {
+                $result->xmlcontent = $xmlout;
+            }
         }
 
         $result = new StdClass;
@@ -130,7 +152,16 @@ class local_etl_external extends external_api {
         }
         $xmlout .= '</sqlrecords>';
 
-        $result->xmlcontent = $xmlout;
+        boardz_escape_ampersands($xmlout);
+
+        if ($restformat == 'xml') {
+            if (function_exists('debug_trace')) {
+                debug_trace("ETL/Get SQL Format : Escaping internal XML");
+            }
+            $result->xmlcontent = htmlentities($xmlout, ENT_QUOTES, 'UTF-8');
+        } else {
+            $result->xmlcontent = $xmlout;
+        }
 
         return $result;
     }

@@ -472,3 +472,16 @@ function boardz_guess_cohort(&$sample) {
         $sample->cohortid = $ce->cohortid;
     }
 }
+
+/**
+ * Protect sample contents from XMLization.
+ */
+function boardz_escape_ampersands(&$sample) {
+    if (is_object($sample) || is_array($sample)) {
+        foreach ($sample as $key => $value) {
+            $sample->$key = str_replace('&', '[%AMP%]', $sample->$key);
+        }
+    } else {
+        $sample = str_replace('&', '[%AMP%]', $sample);
+    }
+}

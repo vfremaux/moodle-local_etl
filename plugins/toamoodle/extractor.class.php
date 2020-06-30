@@ -107,7 +107,7 @@ class toamoodle_extractor extends etl_extractor {
     public function delete() {
         global $DB;
 
-        $DB->delete_records('localetl_'.self::$plugingname, ['id' => $id]);
+        $DB->delete_records('localetl_'.self::$pluginname, ['id' => $this->id]);
     }
 
     public function get_name() {
