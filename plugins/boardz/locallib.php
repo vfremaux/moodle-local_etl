@@ -474,7 +474,7 @@ function boardz_guess_cohort(&$sample) {
 }
 
 /**
- * Protect smaple contents from XMLization.
+ * Protect sample contents from XMLization.
  */
 function boardz_escape_ampersands(&$sample) {
     if (is_object($sample) || is_array($sample)) {

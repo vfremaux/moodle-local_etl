@@ -35,6 +35,7 @@ use \context_course;
 use \context_system;
 use \context_user;
 use \context_block;
+use \moodle_exception;
 
 require_once($CFG->dirroot.'/local/etl/xmllib.php');
 require_once($CFG->dirroot.'/local/etl/plugins/boardz/locallib.php');
@@ -48,6 +49,12 @@ class boardz_extractor extends etl_extractor {
 
     public $publickey;
 
+    /**
+     * @param int $id instance id
+     * @param string $key instance id
+     * @param string $authmethod instance id
+     * @param string $local If local is true an empty plugin will be returned without errors if instance does not exist.
+     */
     public function __construct($id, $key, $authmethod, $local = false) {
         global $DB;
 
@@ -63,6 +70,10 @@ class boardz_extractor extends etl_extractor {
             $this->boardzhost = $boardz->boardzhost;
             $this->boardzipmask = $boardz->boardzipmask;
             $this->masquerade = $boardz->masquerade;
+        } else {
+            if (!$local) {
+                throw new moodle_exception("No ETL instance with this id");
+            }
         }
 
         if ($local) {
@@ -111,7 +122,7 @@ class boardz_extractor extends etl_extractor {
     public function delete() {
         global $DB;
 
-        $DB->delete_records('localetl_'.self::$plugingname, ['id' => $id]);
+        $DB->delete_records('localetl_'.self::$pluginname, ['id' => $this->id]);
     }
 
     public function get_name() {
@@ -374,7 +385,7 @@ class boardz_extractor extends etl_extractor {
                 ORDER BY
                     l.timecreated
             ";
-            $rs = $DB->get_recordset_sql($sql, [$lastsample->datecreated, $lastsample->id]);
+            $rs = $DB->get_recordset_sql($sql, [$lastsample->timecreated, $lastsample->id]);
 
             $this->export_result($rs, $perfs, $output, $lastsample->i);
             $perfs['NUMRECORDS'] += count($rs); // Add the trail count to the main count.
@@ -391,9 +402,9 @@ class boardz_extractor extends etl_extractor {
         $perfs['TOTAL'] = (float)$sec + (float)$usec - (float)$perfs['TOTAL'];
 
         // Prepare the "till when" temporary marker.
-        if (!empty($sample->timecreated)) {
-            $this->lastextract = $sample->timecreated;
-            $this->lastextract_special_actions = $sample->timecreated;
+        if (!empty($lastsample->timecreated)) {
+            $this->lastextract = $lastsample->timecreated;
+            $this->lastextract_special_actions = $lastsample->timecreated;
         } else {
             // Empty extraction.
             $this->lastextract = time();
@@ -538,6 +549,10 @@ class boardz_extractor extends etl_extractor {
                 }
 
                 // Get course information.
+                if ($sample->courseid == 0) {
+                    // Assign all out of course to site course.
+                    $sample->courseid = 1;
+                }
                 if (!array_key_exists($sample->courseid, $COURSECACHE)) {
                     $fields = 'id,idnumber,shortname,category,format,visible';
                     $course = $DB->get_record('course', ['id' => $sample->courseid], $fields);
@@ -1029,7 +1044,9 @@ class boardz_extractor extends etl_extractor {
 
                 // Avoid polluting records with missing implementations.
                 if (empty($moduleinfo)) {
-                    if ($testmode == 'test') echo "skipping $u->itemtype, $u->docid <br/>";
+                    if ($testmode == 'test') {
+                        echo "skipping $u->itemtype, $u->docid <br/>";
+                    }
                     continue;
                 }
 
@@ -1787,37 +1804,41 @@ class boardz_extractor extends etl_extractor {
     }
 
     /**
-     * a special pseudo-query for aknowledging the previous extraction
-     *
+     * a special pseudo-query for aknowleging the previous extraction from the remote side.
+     * Acknowledge may adjust the lastdate of the extraction service, if f.e. the remote side
+     * could NOT proces all the records.
+     * @param stringref &$output an output buffer for logging.
+     * @param bool $testmode
      */
     function extract_acknowledge(&$output, $testmode = false) {
 
         $changed = false;
-        if ($this->lastextract) {
-            if (!empty($this->parms->ackquery)) {
-                $extractname = 'lastextract_'.$this->parms->ackquery;
-                $this->$extractname = $this->lastextract;
-            } else {
-                local_etl_error("Not a valid boardzmoodle query to acknowledge");
-                die;
+        if (!empty($testmode)) {
+            if ($this->lastextract) {
+                // Do we have ever some extraction in the instance ?
+                if (!empty($this->parms->ackquery)) {
+                    $extractname = 'lastextract_'.$this->parms->ackquery;
+                    $this->$extractname = $this->lastextract;
+                } else {
+                    local_etl_error("Not a valid boardzmoodle query to acknowledge");
+                    die;
+                }
+                $this->lastextract = 0;
+                $changed = true;
             }
-            $this->lastextract = 0;
-            $changed = true;
         }
         $this->save_config();
 
-        if ($testmode == 'test') {
-        } else {
-            echo "<?xml version=\"1.0\"  encoding=\"UTF-8\" ?>\n";
-            echo "<acknowledge>\n";
-            if ($changed){
-                echo "\t<lastextract>{$this->lastextract}</lastextract>\n";
-            } else { 
-                echo "\t<nochange>{$this->lastextract}</nochange>\n";
-            }
-            echo "</acknowledge>\n";
+        echo "<?xml version=\"1.0\"  encoding=\"UTF-8\" ?>\n";
+        echo "<acknowledge>\n";
+        if ($changed){
+            echo "\t<lastextract>{$this->lastextract}</lastextract>\n";
+        } else { 
+            echo "\t<nochange>{$this->lastextract}</nochange>\n";
         }
-        // TODO : organize purge of yet unnecessary logs
+        echo "</acknowledge>\n";
+
+        // TODO : organize eventual purge of yet unnecessary logs
     }
 
     /**

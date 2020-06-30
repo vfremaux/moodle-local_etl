@@ -41,6 +41,7 @@ abstract class etl_extractor {
      * @param int $id the plugin instance id
      * @param string $key auth key if required, can be an encrypted or clear jsoned associative array of query params.
      * @param string $method auth method (algorithm)
+     * @param string $local
      */
     public static function instance($plugin, $id, $key = null, $method = null, $local = false) {
         global $CFG;
