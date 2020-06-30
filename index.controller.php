@@ -63,7 +63,7 @@ class index_controller {
 
                 $this->output = get_string('deletecomplete', 'local_etl');
 
-                return new moodle_url('/local/etl/index.php', ['plugin' => $this->data->plugin, 'output' => $this->output]);
+                return new moodle_url('/local/etl/index.php', ['etlplugin' => $this->data->plugin, 'output' => $this->output]);
             }
 
             case 'reset': {
@@ -73,7 +73,7 @@ class index_controller {
 
                 $this->output = get_string('resetcomplete', 'local_etl');
 
-                return new moodle_url('/local/etl/index.php', ['plugin' => $this->data->plugin, 'output' => $this->output]);
+                return new moodle_url('/local/etl/index.php', ['etlplugin' => $this->data->plugin, 'output' => $this->output]);
             }
         }
 
