@@ -427,7 +427,7 @@ class boardz_extractor extends etl_extractor {
         static $CMCACHE = [];
         static $MODCACHE = [];
         static $BICACHE = [];
-        static $BLOCKCACHE = [];
+        static $BLOCKPOSCACHE = [];
         static $COURSECACHE = [];
 
         $lastsample = null;
@@ -470,6 +470,8 @@ class boardz_extractor extends etl_extractor {
 
                     // We will identify a block as [blocktype] : [instanceid] : [position].
                     if ($sample->contextinstanceid) {
+
+                        // Get block instance.
                         if (!array_key_exists($sample->contextinstanceid, $BICACHE)) {
                             $blockinstance = $DB->get_record('block_instances', ['id' => $sample->contextinstanceid]);
                             if ($blockinstance) {
@@ -481,20 +483,37 @@ class boardz_extractor extends etl_extractor {
                         } else {
                             $blockinstance = $BICACHE[$sample->contextinstanceid];
                         }
-                        if (!array_key_exists($blockinstance->blockid, $BLOCKCACHE)) {
-                            $block = $DB->get_record('block', ['id' => $blockinstance->blockid]);
-                            if ($block) {
-                                $BLOCKCACHE[$blockinstance->blockid] = $block;
+
+                        // Get effective position.
+                        $blockpos = false;
+                        if (!array_key_exists($blockinstance->id, $BLOCKPOSCACHE)) {
+                            $blockpos = $DB->get_record('block_positions', ['blockinstanceid' => $blockinstance->id]);
+                            if ($blockpos) {
+                                $BLOCKPOSCACHE[$blockinstance->id] = $blockpos;
+                            } else {
+                                $BLOCKPOSCACHE[$blockinstance->id] = false;
                             }
                         } else {
-                            $block = $BLOCKCACHE[$blockinstance->blockid];
+                            $blockpos = $BLOCKPOSCACHE[$blockinstance->id];
                         }
-                        $blockname = get_string('blockname', $block->name);
-                        $blockidentity = format_string($blockname).' :: ['.$blockinstance->position.','.$blockinstance->weight.'] :: '.$sample->objectid;
+
+                        // Get block name string.
+                        $blockname = get_string('blockname', 'block_'.$blockinstance->blockname);
+                        if ($blockname == '[[blockname]]') {
+                            $blockname = get_string('pluginname', 'block_'.$blockinstance->blockname);
+                        }
+                        if ($blockpos) {
+                            $positionstring = '['.$blockpos->region.','.$blockpos->weight.']';
+                        } else {
+                            $positionstring = '['.$blockinstance->defaultregion.','.$blockinstance->defaultweight.']';
+                        }
+
+                        $blockidentity = format_string($blockname).' :: '.$positionstring.' :: '.$blockinstance->id;
+
                         $sample->instance = htmlentities($blockidentity, ENT_COMPAT, 'UTF-8');
 
                         // Check visibility.
-                        $sample->blockid = $blockinstance->blockid;
+                        $sample->blockid = $blockinstance->id;
                         $sample->visible = $blockinstance->visible;
                         $sample->groupmode = null;
                     }
